@@ -7,7 +7,6 @@ backend/media/
 
 # Local environment files (keep the example template)
 .env
-.env.*
 backend/.env
 
 # Frontend dependencies and local logs
