@@ -1,4 +1,4 @@
-import {$,$$,S,esc,fd,left,pkmax,API,LOGO} from './core';
+import {$,$$,S,esc,fd,left,pkmax,API,LOGO,media} from './core';
 import type {Job,Company} from './types';
 
 interface Stats{jobs:number;cos:number;students:number;offers:number;placed:number;rate:number;hi:number;avg:number}
@@ -75,7 +75,7 @@ reveal();
 /* ---- live data from the backend ---- */
 let O:Overview={jobs:[],cos:[],stats:{jobs:0,cos:0,students:0,offers:0,placed:0,rate:0,hi:0,avg:0}};
 const plural=(n:number,w:string)=>n+' '+w+(n==1?'':'s');
-const companyMark=(c?:Company)=>{const domain=c?.w.match(/^https?:\/\/([^/?#]+)/i)?.[1];return`<span class="rc-logo"><i aria-hidden="true">${esc(c?.n.trim()[0]||'?')}</i>${domain?`<img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&amp;sz=128" alt="" width="36" height="36" decoding="async">`:''}</span>`};
+const companyMark=(c?:Company)=>{const domain=c?.w.match(/^https?:\/\/([^/?#]+)/i)?.[1],src=c?.lg?media(c.lg):domain?`https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128`:'';return`<span class="rc-logo"><i aria-hidden="true">${esc(c?.n.trim()[0]||'?')}</i>${src?`<img src="${esc(src)}" alt="" width="36" height="36" decoding="async">`:''}</span>`};
 const loadCompanyMarks=(root:ParentNode=document)=>{$$('.rc-logo img',root).forEach((img:HTMLImageElement)=>{const mark=img.parentElement;if(img.complete){if(img.naturalWidth)mark?.classList.add('loaded')}else{img.addEventListener('load',()=>mark?.classList.add('loaded'),{once:true})}})};
 const wj=(j:Job)=>{const c=O.cos.find(x=>x.id==j.c),r=left(j.dl),href=loggedIn?`app.html#/job/${j.id}`:`login.html?next=${encodeURIComponent('app.html#/job/'+j.id)}`;
 return`<article class="job card" data-rv><div class="co">${companyMark(c)}</div><div><h4>${esc(j.t)}</h4><small>${esc(c?c.n:'')} · ${esc(j.l)}</small></div><span class="dlp ${r>7?'ok':''}">${r<=0?'Last day':r<=7?plural(r,'day')+' left':'Closes '+fd(j.dl)}</span><div class="sk2">${j.sk.map(k=>`<span>${esc(k)}</span>`).join('')}</div><p class="meta">💰 ${esc(j.pk)} &nbsp;·&nbsp; 🏷 ${esc(j.cat)}</p><a class="btn fill sm" href="${href}">${loggedIn?'View and apply':'Login to apply'}</a></article>`};

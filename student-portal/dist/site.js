@@ -27,6 +27,7 @@
   var ROLE = document.body.dataset.r || "student";
   var API = window.CT_API || (location.port == "8000" ? "/api" : "http://127.0.0.1:8000/api");
   var ORIGIN = API.replace(/\/api$/, "");
+  var media = (u) => u ? /^https?:/.test(u) ? u : ORIGIN + u : "";
   async function api(method, path, body) {
     const h = {}, t = S.get(ROLE + "tok");
     if (t) h.Authorization = "Bearer " + t;
@@ -376,8 +377,8 @@
   var O = { jobs: [], cos: [], stats: { jobs: 0, cos: 0, students: 0, offers: 0, placed: 0, rate: 0, hi: 0, avg: 0 } };
   var plural = (n, w) => n + " " + w + (n == 1 ? "" : "s");
   var companyMark = (c) => {
-    const domain = c?.w.match(/^https?:\/\/([^/?#]+)/i)?.[1];
-    return `<span class="rc-logo"><i aria-hidden="true">${esc(c?.n.trim()[0] || "?")}</i>${domain ? `<img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&amp;sz=128" alt="" width="36" height="36" decoding="async">` : ""}</span>`;
+    const domain = c?.w.match(/^https?:\/\/([^/?#]+)/i)?.[1], src = c?.lg ? media(c.lg) : domain ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128` : "";
+    return `<span class="rc-logo"><i aria-hidden="true">${esc(c?.n.trim()[0] || "?")}</i>${src ? `<img src="${esc(src)}" alt="" width="36" height="36" decoding="async">` : ""}</span>`;
   };
   var loadCompanyMarks = (root = document) => {
     $$(".rc-logo img", root).forEach((img) => {
